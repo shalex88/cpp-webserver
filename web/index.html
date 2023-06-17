@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Temperature Monitor</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Temperature Monitor</h1>
+<p>Current temperature: <span id="temperature">Loading...</span>°C</p>
+
+<script>
+    function updateTemperature() {
+        $.get('/data', function(data) {
+            $('#temperature').text(data.temperature);
+        });
+    }
+
+    $(document).ready(function() {
+        updateTemperature(); // Update the temperature when the page loads
+        setInterval(updateTemperature, 1000); // Update the temperature every second
+    });
+</script>
+</body>
+</html>

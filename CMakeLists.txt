@@ -1,17 +1,26 @@
-cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
-project(cpp-webserver VERSION 1.0.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.26)
 
-set(CMAKE_CXX_STANDARD 17)
+include(cmake/vcpkg.cmake)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_compile_options(-Wall -Wextra -Wpedantic)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/W4)
-else()
-    message(WARNING "Unknown Compiler ${CMAKE_CXX_COMPILER_ID}")
-endif()
+project(cpp-webserver LANGUAGES CXX)
 
-include_directories(include)
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "source/*.cpp")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} source/main.cpp)
+
+find_package(httplib CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+target_link_libraries(${PROJECT_NAME} PRIVATE httplib::httplib nlohmann_json::nlohmann_json)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+install(FILES ${CMAKE_SOURCE_DIR}/web/index.html DESTINATION share/${PROJECT_NAME})
+
+#include(InstallRequiredSystemLibraries)
+#set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+#set(CPACK_PACKAGE_VERSION_MAJOR "1")
+#set(CPACK_PACKAGE_VERSION_MINOR "0")
+#set(CPACK_GENERATOR "DEB")
+#set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Your Name") # replace with your name
+#include(CPack)
